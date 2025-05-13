@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birth</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            overflow: hidden;
+            perspective: 800px;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .text {
+            position: absolute;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 0 0 20px red, 0 0 40px pink;
+            cursor: grab;
+            transform: rotateX(45deg);
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotateX(45deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotateX(0deg) scale(0.5); opacity: 0; }
+        }
+
+        .music {
+            width: 1px;
+            height: 1px;
+            position: absolute;
+            top: -1000px;
+            left: -1000px;
+        }
+
+        .music-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Nhạc nền từ YouTube -->
+    <iframe class="music" id="musicPlayer" src="" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+
+    <button class="music-button" onclick="playMusic()">🎵 Bật nhạc</button>
+
+    <div class="container"></div>
+
+    <script>
+        const container = document.querySelector('.container');
+        const messages = ["I Love You❤️", "19/05/2004❤️", "Happy Birth"];
+
+        function createText() {
+            for (let i = 0; i < 30; i++) {
+                const text = document.createElement("div");
+                text.classList.add("text");
+                text.innerHTML = messages[Math.floor(Math.random() * messages.length)];
+                text.style.left = Math.random() * 80 + "vw";
+                text.style.top = Math.random() * 20 + "vh";
+                text.style.animationDuration = (Math.random() * 3 + 4) + "s";
+                text.style.transform = `rotateX(${Math.random() * 60}deg)`;
+                text.draggable = true;
+
+                // Cho phép kéo
+                text.addEventListener('mousedown', (event) => {
+                    let offsetX = event.clientX - text.getBoundingClientRect().left;
+                    let offsetY = event.clientY - text.getBoundingClientRect().top;
+
+                    function move(event) {
+                        text.style.left = (event.clientX - offsetX) + "px";
+                        text.style.top = (event.clientY - offsetY) + "px";
+                    }
+
+                    function stop() {
+                        document.removeEventListener("mousemove", move);
+                        document.removeEventListener("mouseup", stop);
+                    }
+
+                    document.addEventListener("mousemove", move);
+                    document.addEventListener("mouseup", stop);
+                });
+
+                container.appendChild(text);
+                setTimeout(() => { text.remove(); }, 7000);
+            }
+        }
+
+        setInterval(createText, 500);
+
+        function playMusic() {
+            document.getElementById("musicPlayer").src = "https://www.youtube.com/embed/i7Zkp5RQw8Y?autoplay=1&loop=1&playlist=i7Zkp5RQw8Y";
+        }
+    </script>
+</body>
+</html>
